@@ -1,0 +1,27 @@
+on: [push]
+jobs:
+  deptrack:
+    name: Generate and upload BOM
+    runs-on: ubuntu-latest
+    steps:
+      # To use an action in the root directory, you have to checkout first
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create SBOM step
+        uses: CycloneDX/gh-node-module-generatebom@v1
+        with:
+          output: './bom.xml'
+
+      - name: Upload bom to dependency-track instance
+        uses: ./
+        id: deptrack
+        with:
+          serverUrl: 'https://${{ secrets.DEPENDENCYTRACK_HOST }}/api/v1/bom'
+          apiKey: ${{ secrets.DEPENDENCYTRACK_APIKEY }}
+          bomFile: './bom.xml'
+          projectName: ${{ github.repository }}
+          projectVersion: ${{ github.ref_name }}
+          autoCreate: true
+      - name: StatusCode
+        run: echo "Upload returned ${{ steps.deptrack.outputs.statusCode }}"

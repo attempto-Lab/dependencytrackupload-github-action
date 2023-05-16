@@ -1,0 +1,31 @@
+name: 'OWASP Dependency-Track Upload Github Action'
+description: 'Uploads a generated BOM to your Dependency-Track instance'
+inputs:
+  serverUrl:
+    description: 'full qualified dependency track server url'
+    required: true
+  apiKey:
+    description: 'your dependency track api-key'
+    required: true
+  bomFile:
+    description: 'bom-file including path'
+    required: true
+  projectUUID:
+    description: 'project uuid'
+    required: true
+  projectName:
+    description: 'name of the project'
+    required: true
+  projectVersion:
+    description: 'project version'
+    required: true
+  autoCreate:
+    description: 'should the project be automatically created if it does not exist'
+    required: false
+    default: false
+outputs:
+  statusCode:
+    description: 'status code of upload'
+runs:
+  using: 'node16'
+  main: 'index.js'
